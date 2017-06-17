@@ -1,0 +1,153 @@
+导入依赖（taotao-manage-web>>>taotao-manage-service>>>taotao-manage-mapper>>>taotao-manage-pojo）
+	① 在使用依赖的最底层导入。
+	② 运行时所需要的依赖在web工程中加入。
+	③ 所有的工程都需要的依赖应该在聚合工程中导入。
+	
+	
+nginx（请求>>>nginx>>>tomcat）
+	启动 start nginx.exe
+	停止 nginx.exe -s stop
+	重新加载 nginx.exe -s reload （修改之后，不用关闭重启）
+	
+	nginx.conf
+					
+			#user  nobody;
+			worker_processes  1;
+
+			#error_log  logs/error.log;
+			#error_log  logs/error.log  notice;
+			#error_log  logs/error.log  info;
+
+			#pid        logs/nginx.pid;
+
+
+			events {
+				worker_connections  1024;
+			}
+
+
+			http {
+				include       mime.types;
+				default_type  application/octet-stream;
+
+				#log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+				#                  '$status $body_bytes_sent "$http_referer" '
+				#                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+				#access_log  logs/access.log  main;
+
+				sendfile        on;
+				#tcp_nopush     on;
+
+				#keepalive_timeout  0;
+				keepalive_timeout  65;
+
+				gzip  on;
+
+				server {
+					listen       80;
+					server_name  manage.taotao.com;
+
+					#charset koi8-r;
+
+					#access_log  logs/host.access.log  main;
+
+				proxy_set_header X-Forwarded-Host $host;
+					proxy_set_header X-Forwarded-Server $host;
+					proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+					location / {
+					proxy_pass http://127.0.0.1:8079;	#taotao-manage 地址  8079  maven地址8081
+					proxy_connect_timeout 600;
+					proxy_read_timeout 600;
+					}
+					
+				}
+
+				server {
+					listen       80;
+					server_name  image.taotao.com;
+
+					#charset koi8-r;
+
+					#access_log  logs/host.access.log  main;
+
+				proxy_set_header X-Forwarded-Host $host;
+					proxy_set_header X-Forwarded-Server $host;
+					proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+					location / {
+					root  C:\\taotao-upload;
+					}
+					
+				}
+
+			}
+
+			
+	事物相关
+	Creating new transaction with name [com.taotao.manage.service.ItemServcie.saveItem]: PROPAGATION_REQUIRED,ISOLATION_DEFAULT		
+	Participating in existing transaction		
+	Releasing transactional SqlSession		
+	Initiating transaction commit		
+	Committing JDBC transaction on Connection		
+	Releasing JDBC Connection 		
+	Returning JDBC Connection to DataSource		
+			
+	@value
+		@value作用 获取配置文件的值
+		注入值：在spring容器初始化（所有bean）之后，在当前的所在容器中获取值，然后注入
+			
+	Spring父子容器
+		子容器能够访问父容器的资源（bean)
+			例如：Controller 可以注入service
+		父容器不能访问子容器的资源
+			
+			
+	日志打印（slf4j)
+		private static final Logger LOGGER = LoggerFactory.getLogger(ItemController.class);
+			//这里的判断可保证在日志级别调高后，不至于去执行无用的代码
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("新增商品，item = {},desc = {}", item, desc);
+			}	
+	总结：①方法的入参处需要将参数打印；②业务执行的状态发生变化；③异常处打印。	
+			
+			
+	xx.html(); 插入html片段
+	
+	如果返回的是 ResponEntity  其实就优先返回json的格式的数据，其优先于 @Resonbody注解
+			
+			
+返回Responentity string 乱码的情况		org.springframework.web.servlet.config.AnnotationDrivenBeanDefinitionParser	
+org.springframework.http.converter.StringHttpMessageConverter
+<!-- 定义注解驱动 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<constructor-arg index="0" value="UTF-8" />
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
